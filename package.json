@@ -1,0 +1,29 @@
+{
+  "name": "ticker-processor",
+  "version": "1.0.0",
+  "description": "Facilitate ticker decoration process",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm run aTest",
+    "aTest": "mocha --compilers js:babel-register --require babel-polyfill test/acceptance/**/*.js"
+  },
+  "keywords": [
+    "node"
+  ],
+  "author": "Justin Robison",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-preset-env": "^1.5.2",
+    "babel-register": "^6.24.1",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
+  },
+  "dependencies": {
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
+    "restify": "^4.3.0",
+    "uuid": "^3.1.0"
+  }
+}
