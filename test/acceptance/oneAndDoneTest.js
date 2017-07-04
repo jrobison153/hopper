@@ -1,74 +1,79 @@
-import {expect} from 'chai'
-import requestPromise from 'request-promise'
-import server from '../../src/server'
-import fakeTickerSource from '../fakes/fakeTickerSource'
-import tickerSourceFactory from '../../src/io/tickerSourceFactory'
+import { expect } from 'chai';
+import requestPromise from 'request-promise';
+import server from '../../src/server';
+import mongodbStub from '../stub/mongo/TickersWithoutChromosomeMongoStub';
+import RedisStub from '../stub/redis/RedisStub';
 
 describe('Tests for behaviors that process all un-decorated tickers', () => {
 
-    beforeEach(() => {
+  before(() => {
 
-        tickerSourceFactory.setDataSource(fakeTickerSource)
+    const redisStub = new RedisStub();
+    return server.start(mongodbStub, redisStub);
+  });
 
-        return server.start()
+  after(() => {
+
+    server.stop();
+  });
+
+  describe('When orchestrating the decoration of tickers', () => {
+
+    it('Then only tickers without a chromosome are processed', () => {
+
+      return batchProcessTickers().then((responseBody) => {
+
+        const expectedChromsomeIds = mongodbStub.MongoClient.getDatabase().collection()
+          .find()
+          .toArray()
+          .map((ticker) => {
+            return ticker.id;
+          });
+
+        const processedTickers = JSON.parse(responseBody);
+        expect(processedTickers).to.have.deep.members(expectedChromsomeIds);
+      });
     });
+  });
+});
 
-    afterEach(() => {
+async function batchProcessTickers() {
 
-        server.stop()
-    })
+  const processResponse = await processTickers();
+  return getProcessedTickers(processResponse);
+}
 
+function processTickers() {
 
-    describe('When orchestrating the decoration of tickers', () => {
+  const options = {
+    method: 'POST',
+    uri: 'http://localhost:8080/chromosomes',
+  };
 
-        it('Then only tickers without a chromosome are processed', () => {
+  const tickersProcessed = requestPromise(options).then((data) => {
 
-            const tickerWithChromosomeId = '58b3fe41d13742ff314f2a4f'
+    return JSON.parse(data);
+  }).catch((err) => {
 
-            return batchProcessTickers().then((processedTickers) => {
+    console.error(err.toString());
+  });
 
-                expect(processedTickers).to.not.include(tickerWithChromosomeId)
-            });
-        })
-    })
+  return tickersProcessed;
+}
 
-    async function batchProcessTickers() {
+function getProcessedTickers(resourceId) {
 
-        const processResponse = await processTickers()
-        return getProcessedTickers(processResponse.id)
-    }
+  const options = {
+    method: 'GET',
+    uri: `http://localhost:8080/chromosomes/${resourceId}`,
+  };
 
-    function processTickers() {
+  return requestPromise(options).then((data) => {
 
-        const options = {
-            method: 'POST',
-            uri: 'http://localhost:8080/chromosomes',
-        };
+    return data;
+  }).catch((err) => {
 
-        return requestPromise(options).then((data) => {
-
-            return data
-        }).catch((err) => {
-
-            console.log(err.toString())
-        })
-    }
-
-    function getProcessedTickers(resourceId) {
-
-        const options = {
-            method: 'GET',
-            uri: `http://localhost:8080/chromosomes/${resourceId}`
-        }
-
-        return requestPromise(options).then((data) => {
-
-            return data
-        }).catch((err) => {
-
-            console.log(err.toString())
-        })
-    }
-})
-
+    console.error(err.toString());
+  });
+}
 

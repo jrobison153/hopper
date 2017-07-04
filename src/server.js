@@ -1,43 +1,92 @@
-import restify from 'restify'
-import uuid from 'uuid'
+import restify from 'restify';
+import mongodb from 'mongodb';
+import redis from 'redis';
+import undecoratedChromosomeProcessor from './service/undecoratedChromosomeProcessor';
+import mongoTickerSource from './io/mongoTickerSource';
+import DecoratorService from './integration/decoratorService';
 
-const port = 8080
-let restifyServer = null
+const port = process.env.PORT || 8080;
+let restifyServer = null;
 
-let server = {}
+const server = {};
 
-export default server
+export default server;
 
-server.start = function () {
+server.start = (dataSource, redisIntegration) => {
 
-    restifyServer = restify.createServer();
+  const theDataSource = pickDataSource(dataSource);
+  const theRedisIntegration = pickRedisIntegration(redisIntegration);
 
-    restifyServer.post('/chromosomes', (req, resp, next) => {
+  mongoTickerSource.connect(theDataSource);
 
-        resp.send({id: uuid.v4()})
-    })
+  const decoratorService = new DecoratorService(theRedisIntegration);
+  restifyServer = restify.createServer();
 
-    restifyServer.get('/chromosomes/:resourceId', (req, resp, next) => {
+  configureResources(decoratorService);
 
-        resp.send(['58b3fe41d13742ff314f2a4f'])
-    })
+  return startServer();
+};
 
-    return new Promise((resolve) => {
+server.stop = () => {
 
-        restifyServer.listen(port, function () {
+  mongoTickerSource.disconnect();
 
-            console.log(`${restifyServer.name} listening at ${restifyServer.url}`)
-            resolve()
-        })
-    })
-}
+  if (restifyServer !== null) {
 
-server.stop = function () {
+    console.info(`Stopping server ${restifyServer.name} at ${restifyServer.url}`);
 
-    if (restifyServer !== null) {
+    restifyServer.close();
+  }
+};
 
-        console.log(`Stopping server ${restifyServer.name} at ${restifyServer.url}`)
+const pickDataSource = (providedDataSource) => {
 
-        restifyServer.close()
-    }
-}
+  let dataSourceToUse = mongodb;
+  if (providedDataSource !== undefined) {
+
+    dataSourceToUse = providedDataSource;
+  }
+
+  return dataSourceToUse;
+};
+
+const pickRedisIntegration = (providedRedis) => {
+
+  let redisIntegrationToUse = redis;
+  if (providedRedis !== undefined) {
+
+    redisIntegrationToUse = providedRedis;
+  }
+
+  return redisIntegrationToUse;
+};
+
+const configureResources = (decoratorService) => {
+
+  restifyServer.post('/chromosomes', (req, resp) => {
+
+    undecoratedChromosomeProcessor.process(mongoTickerSource, decoratorService).then((batchId) => {
+
+      resp.send(batchId);
+    });
+  });
+
+  restifyServer.get('/chromosomes/:batchId', (req, resp) => {
+
+    const processedTickerIds = undecoratedChromosomeProcessor.getProcessedTickers(req.params.batchId);
+    resp.send(processedTickerIds);
+  });
+};
+
+const startServer = () => {
+
+  return new Promise((resolve) => {
+
+    restifyServer.listen(port, () => {
+
+      console.info(`${restifyServer.name} listening at ${restifyServer.url}`);
+      resolve();
+    });
+  });
+};
+
