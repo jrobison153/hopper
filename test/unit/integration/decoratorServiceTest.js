@@ -27,7 +27,7 @@ describe('Decorator Service Tests', () => {
       const decoratorService = new DecoratorService(redisStub);
       decoratorService.decorateTicker(tickerToDecorate);
 
-      lastEvent = redisClientSpy.getLastTickerEvent();
+      lastEvent = JSON.parse(redisClientSpy.getLastTickerEvent());
     });
 
     it('emits an event with the event type set', () => {

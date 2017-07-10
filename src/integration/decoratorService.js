@@ -19,7 +19,7 @@ export default class DecoratorService {
       payload: ticker,
     };
 
-    this.publisher.publish('DECORATION', event);
+    this.publisher.publish('DECORATION', JSON.stringify(event));
   }
 }
 

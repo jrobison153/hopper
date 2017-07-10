@@ -9,7 +9,8 @@
     "test:acceptance": "mocha --require babel-register --require babel-polyfill test/acceptance/**/*.js",
     "test:acceptance:watch": "mocha --watch --require babel-register --require babel-polyfill test/acceptance/**/*.js",
     "test:unit": "mocha --require babel-register --require babel-polyfill test/unit/**/*.js",
-    "test:unit:watch": "mocha --watch --require babel-register --require babel-polyfill test/unit/**/*.js"
+    "test:unit:watch": "mocha --watch --require babel-register --require babel-polyfill test/unit/**/*.js",
+    "start": "node ./index.js"
   },
   "keywords": [
     "node"
