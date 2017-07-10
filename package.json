@@ -2,7 +2,7 @@
   "name": "ticker-processor",
   "version": "1.0.0",
   "description": "Facilitate ticker decoration process",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "lint": "node ./node_modules/eslint/bin/eslint ./src/**/*.js ./test/**/*.js",
     "test": "npm run test:unit && npm run test:acceptance",
@@ -17,8 +17,6 @@
   "author": "Justin Robison",
   "license": "Apache-2.0",
   "devDependencies": {
-    "babel-preset-env": "^1.5.2",
-    "babel-register": "^6.24.1",
     "chai": "^4.0.2",
     "eslint": "^4.0.0",
     "eslint-config-airbnb-base": "^11.2.0",
@@ -28,6 +26,8 @@
   "dependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
+    "babel-register": "^6.24.1",
     "mongodb": "^2.2.29",
     "redis": "^2.7.1",
     "request": "^2.81.0",
