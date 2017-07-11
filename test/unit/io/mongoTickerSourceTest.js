@@ -5,17 +5,47 @@ import mongodb from '../../stub/mongo/TickersWithoutChromosomeMongoStub';
 
 describe('MongoTicker Data Source Tests', () => {
 
-  before(() => {
+  describe('When connecting to mongo', () => {
 
-    return mongoTickerSource.connect(mongodb);
-  });
+    const envBackup = {};
 
-  after(() => {
+    before(() => {
 
-    mongoTickerSource.disconnect();
+      envBackup.MONGO_CONNECTION_DATABASE = process.env.MONGO_CONNECTION_DATABASE;
+
+      process.env.MONGO_CONNECTION_DATABASE = 'aSuperDatabase';
+    });
+
+    after(() => {
+
+      process.env.MONGO_CONNECTION_DATABASE = envBackup.MONGO_CONNECTION_DATABASE;
+    });
+
+    it('Then the database to connect to is determined by the environment', () => {
+
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+        const connectionStringPathBits = connectionString.split('/');
+        const databaseConnectedTo = connectionStringPathBits[connectionStringPathBits.length - 1];
+
+        expect(databaseConnectedTo).to.equal('aSuperDatabase');
+      });
+    });
   });
 
   describe('Given connection to a mongo database', () => {
+
+    before(() => {
+
+      return mongoTickerSource.connect(mongodb);
+    });
+
+    after(() => {
+
+      mongoTickerSource.disconnect();
+    });
 
     describe('When getting tickers without a chromosome', () => {
 
