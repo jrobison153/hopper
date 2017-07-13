@@ -8,7 +8,7 @@ let connectionUrl = 'mongodb://localhost:27017';
 mongoTickerSource.connect = (mongodb) => {
 
   let databaseName = 'testStockData';
-  if(process.env.MONGO_CONNECTION_DATABASE) {
+  if (process.env.MONGO_CONNECTION_DATABASE) {
     databaseName = process.env.MONGO_CONNECTION_DATABASE;
 
   }
