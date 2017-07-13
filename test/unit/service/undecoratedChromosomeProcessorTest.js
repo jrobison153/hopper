@@ -60,7 +60,9 @@ describe('UndecoratedChromosomeProcessor Tests', () => {
       }).then((tickersWithoutChromosome) => {
 
         const expectedTickerIds = tickersWithoutChromosome.map((ticker) => {
-          return ticker.id;
+
+          // eslint-disable-next-line no-underscore-dangle
+          return ticker._id;
         });
 
         expect(processedTickers).to.have.deep.members(expectedTickerIds);

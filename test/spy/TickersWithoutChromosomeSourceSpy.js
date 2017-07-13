@@ -8,9 +8,9 @@ export default class TickersWithoutChromosomeSourceSpy {
   constructor() {
 
     this.tickerData = [
-      { id: '1111', ticker: 'GOOG' },
-      { id: '1112', ticker: 'C' },
-      { id: '1113', tikcer: 'PVH' },
+      { _id: '1111', ticker: 'GOOG' },
+      { _id: '1112', ticker: 'C' },
+      { _id: '1113', tikcer: 'PVH' },
     ];
   }
 

@@ -36,6 +36,7 @@ function pipeSourceToDecoratorService(streamOfTickers, decoratorService, batchId
 
     decoratorService.decorateTicker(ticker);
 
-    processedTickerBatches[batchId].push(ticker.id);
+    // eslint-disable-next-line no-underscore-dangle
+    processedTickerBatches[batchId].push(ticker._id);
   });
 }
