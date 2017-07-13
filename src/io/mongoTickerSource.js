@@ -9,8 +9,8 @@ mongoTickerSource.connect = (mongodb) => {
 
   let databaseName = 'testStockData';
   if (process.env.MONGO_CONNECTION_DATABASE) {
-    databaseName = process.env.MONGO_CONNECTION_DATABASE;
 
+    databaseName = process.env.MONGO_CONNECTION_DATABASE;
   }
 
   connectionUrl = `${connectionUrl}/${databaseName}`;
