@@ -15,6 +15,8 @@ mongoTickerSource.connect = (mongodb) => {
 
   connectionUrl = `${connectionUrl}/${databaseName}`;
 
+  console.info(`Connectiong to mongo dataabase ${connectionUrl}`);
+
   const MongoClient = mongodb.MongoClient;
   return MongoClient.connect(connectionUrl).then((db) => {
 
