@@ -3,23 +3,13 @@ export default class RedisClientSpy {
 
   constructor() {
 
-    this.lastEventPayload = undefined;
-    this.lastChannelPublishedTo = undefined;
+    this.lastQueueRightPushedTo = undefined;
+    this.lastRightPushedMessage = undefined;
   }
 
-  publish(channel, data) {
+  rpush(queueName, message) {
 
-    this.lastEventPayload = data;
-    this.lastChannelPublishedTo = channel;
-  }
-
-  getLastTickerEvent() {
-
-    return this.lastEventPayload;
-  }
-
-  getLastChannelPublishedTo() {
-
-    return this.lastChannelPublishedTo;
+    this.lastQueueRightPushedTo = queueName;
+    this.lastRightPushedMessage = message;
   }
 }

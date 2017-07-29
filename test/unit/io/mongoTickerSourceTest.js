@@ -62,9 +62,9 @@ describe('MongoTicker Data Source Tests', () => {
       it('Then a stream of tickers is returned', () => {
 
         const expectedTickers = [
-          { id: '1111', ticker: 'GOOG' },
-          { id: '1112', ticker: 'C' },
-          { id: '1113', tikcer: 'PVH' },
+          { _id: '1111', ticker: 'GOOG' },
+          { _id: '1112', ticker: 'C' },
+          { _id: '1113', tikcer: 'PVH' },
         ];
 
         const tickerStream = mongoTickerSource.getTickersWithoutChromosome();

@@ -5,9 +5,9 @@ export default class TickersWithoutChromosomeCursorStub {
   constructor() {
 
     this.data = [
-      { id: '1111', ticker: 'GOOG' },
-      { id: '1112', ticker: 'C' },
-      { id: '1113', tikcer: 'PVH' },
+      { _id: '1111', ticker: 'GOOG' },
+      { _id: '1112', ticker: 'C' },
+      { _id: '1113', tikcer: 'PVH' },
     ];
   }
 

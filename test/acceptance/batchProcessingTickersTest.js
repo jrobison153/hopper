@@ -27,7 +27,7 @@ describe('Tests for behaviors that process all un-decorated tickers', () => {
           .find()
           .toArray()
           .map((ticker) => {
-            return ticker.id;
+            return ticker._id;
           });
 
         const processedTickers = JSON.parse(responseBody);
