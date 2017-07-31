@@ -27,6 +27,8 @@ describe('Tests for behaviors that process all un-decorated tickers', () => {
           .find()
           .toArray()
           .map((ticker) => {
+
+            // eslint-disable-next-line no-underscore-dangle
             return ticker._id;
           });
 
