@@ -1,13 +1,16 @@
 import RedisClientSpy from '../../spy/redis/RedisclientSpy';
 
-export default class RedisStub {
+export default class RedisSpy {
 
   constructor() {
 
     this.redisClient = new RedisClientSpy();
   }
 
-  createClient() {
+  createClient(host, port) {
+
+    this.host = host;
+    this.port = port;
 
     return this.redisClient;
   }

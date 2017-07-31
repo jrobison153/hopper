@@ -2,14 +2,14 @@ import { expect } from 'chai';
 import requestPromise from 'request-promise';
 import server from '../../src/server';
 import mongodbStub from '../stub/mongo/TickersWithoutChromosomeMongoStub';
-import RedisStub from '../stub/redis/RedisStub';
+import RedisSpy from '../stub/redis/RedisSpy';
 
 describe('Tests for behaviors that process all un-decorated tickers', () => {
 
   before(() => {
 
-    const redisStub = new RedisStub();
-    return server.start(mongodbStub, redisStub);
+    const redisSpy = new RedisSpy();
+    return server.start(mongodbStub, redisSpy);
   });
 
   after(() => {
