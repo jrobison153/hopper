@@ -3,17 +3,28 @@ export default mongoTickerSource;
 
 let testDb;
 
-let connectionUrl = 'mongodb://localhost:27017';
-
 mongoTickerSource.connect = (mongodb) => {
 
+  let host = 'localhost';
+  let port = '27017';
   let databaseName = 'testStockData';
+
+  if (process.env.MONGO_CONNECTION_HOST) {
+
+    host = process.env.MONGO_CONNECTION_HOST;
+  }
+
+  if (process.env.MONGO_CONNECTION_PORT) {
+
+    port = process.env.MONGO_CONNECTION_PORT;
+  }
+
   if (process.env.MONGO_CONNECTION_DATABASE) {
 
     databaseName = process.env.MONGO_CONNECTION_DATABASE;
   }
 
-  connectionUrl = `${connectionUrl}/${databaseName}`;
+  const connectionUrl = `mongodb://${host}:${port}/${databaseName}`;
 
   console.info(`Connectiong to mongo dataabase ${connectionUrl}`);
 

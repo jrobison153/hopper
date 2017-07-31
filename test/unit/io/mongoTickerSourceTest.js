@@ -8,29 +8,101 @@ describe('MongoTicker Data Source Tests', () => {
   describe('When connecting to mongo', () => {
 
     const envBackup = {};
+    const connectionUrlRegEx = /mongodb:\/\/(.+):([0-9]+)\/(.+)/;
 
-    before(() => {
+    beforeEach(() => {
 
       envBackup.MONGO_CONNECTION_DATABASE = process.env.MONGO_CONNECTION_DATABASE;
+      envBackup.MONGO_CONNECTION_HOST = process.env.MONGO_CONNECTION_HOST;
+      envBackup.MONGO_CONNECTION_PORT = process.env.MONGO_CONNECTION_PORT;
 
       process.env.MONGO_CONNECTION_DATABASE = 'aSuperDatabase';
+      process.env.MONGO_CONNECTION_HOST = 'somehost';
+      process.env.MONGO_CONNECTION_PORT = '76543';
     });
 
-    after(() => {
+    afterEach(() => {
 
+      process.env.MONGO_CONNECTION_HOST = envBackup.MONGO_CONNECTION_HOST;
       process.env.MONGO_CONNECTION_DATABASE = envBackup.MONGO_CONNECTION_DATABASE;
+      process.env.MONGO_CONNECTION_PORT = envBackup.MONGO_CONNECTION_PORT;
     });
 
-    it('Then the database to connect to is determined by the environment', () => {
+    it('defaults the database to connect to if the environment hasn\'t specified it', () => {
 
+      delete process.env.MONGO_CONNECTION_DATABASE;
 
       return mongoTickerSource.connect(mongodb).then(() => {
 
         const connectionString = mongodb.MongoClient.getConnectionUrl();
-        const connectionStringPathBits = connectionString.split('/');
-        const databaseConnectedTo = connectionStringPathBits[connectionStringPathBits.length - 1];
+
+        const databaseConnectedTo = connectionString.match(connectionUrlRegEx)[3];
+
+        expect(databaseConnectedTo).to.equal('testStockData');
+      });
+    });
+
+    it('defaults the database host if the environment hasn\'t specified it', () => {
+
+      delete process.env.MONGO_CONNECTION_HOST;
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+
+        const databaseConnectedTo = connectionString.match(connectionUrlRegEx)[1];
+
+        expect(databaseConnectedTo).to.equal('localhost');
+      });
+    });
+
+    it('defaults the database port if the environment hasn\'t specified it', () => {
+
+      delete process.env.MONGO_CONNECTION_PORT;
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+
+        const databaseConnectedTo = connectionString.match(connectionUrlRegEx)[2];
+
+        expect(databaseConnectedTo).to.equal('27017');
+      });
+    });
+
+    it('gets the database to connect to from the environment', () => {
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+
+        const databaseConnectedTo = connectionString.match(connectionUrlRegEx)[3];
 
         expect(databaseConnectedTo).to.equal('aSuperDatabase');
+      });
+    });
+
+    it('gets the connection host from the environment', () => {
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+
+        const hostConnctedTo = connectionString.match(connectionUrlRegEx)[1];
+
+        expect(hostConnctedTo).to.equal('somehost');
+      });
+    });
+
+    it('gets the connection port from the environment', () => {
+
+      return mongoTickerSource.connect(mongodb).then(() => {
+
+        const connectionString = mongodb.MongoClient.getConnectionUrl();
+
+        const hostConnctedTo = connectionString.match(connectionUrlRegEx)[2];
+
+        expect(hostConnctedTo).to.equal('76543');
       });
     });
   });
