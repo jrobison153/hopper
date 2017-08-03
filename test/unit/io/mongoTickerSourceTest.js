@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 import mongoTickerSource from '../../../src/io/mongoTickerSource';
 import mongodb from '../../stub/mongo/TickersWithoutChromosomeMongoStub';
+import connectionRefusedMongoDb from '../../stub/mongo/ConnectionRefusedMongoDatabaseStub';
 
 describe('MongoTicker Data Source Tests', () => {
 
@@ -26,6 +27,8 @@ describe('MongoTicker Data Source Tests', () => {
       process.env.MONGO_CONNECTION_HOST = envBackup.MONGO_CONNECTION_HOST;
       process.env.MONGO_CONNECTION_DATABASE = envBackup.MONGO_CONNECTION_DATABASE;
       process.env.MONGO_CONNECTION_PORT = envBackup.MONGO_CONNECTION_PORT;
+
+      connectionRefusedMongoDb.reset();
     });
 
     it('defaults the database to connect to if the environment hasn\'t specified it', () => {
@@ -104,6 +107,17 @@ describe('MongoTicker Data Source Tests', () => {
 
         expect(hostConnctedTo).to.equal('76543');
       });
+    });
+
+    describe('and the mongo connection is refused', () => {
+
+      it('attempts to connect the maximum  number of times before giving up', () => {
+
+        return mongoTickerSource.connect(connectionRefusedMongoDb, 3).catch(() => {
+
+          expect(connectionRefusedMongoDb.MongoClient.numberOfTimesConnectCalled).to.equal(3);
+        });
+      }).timeout(10000);
     });
   });
 
