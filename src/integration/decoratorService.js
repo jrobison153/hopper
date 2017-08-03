@@ -1,6 +1,6 @@
 export default class DecoratorService {
 
-  constructor(redis) {
+  constructor(redis, retryStrategy) {
 
     let host = 'localhost';
 
@@ -16,7 +16,7 @@ export default class DecoratorService {
       port = process.env.HOPPER_REDIS_CONNECTION_PORT;
     }
 
-    this.redisClient = redis.createClient(host, port);
+    this.redisClient = redis.createClient(port, host, { retry_strategy: retryStrategy });
   }
 
   decorateTicker(ticker) {

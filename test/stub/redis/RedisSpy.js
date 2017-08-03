@@ -7,10 +7,16 @@ export default class RedisSpy {
     this.redisClient = new RedisClientSpy();
   }
 
-  createClient(host, port) {
+  createClient(port, host, options) {
 
-    this.host = host;
     this.port = port;
+    this.host = host;
+    this.retryStrategy = options.retry_strategy;
+
+    return this.redisClient;
+  }
+
+  getClient() {
 
     return this.redisClient;
   }

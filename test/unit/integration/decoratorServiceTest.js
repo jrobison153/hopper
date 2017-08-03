@@ -5,14 +5,14 @@ import DecoratorService from '../../../src/integration/decoratorService';
 
 describe('Decorator Service Tests', () => {
 
-  let redisClientSpy;
   let decoratorService;
   let redisSpy;
+
+  const retryStrategy = () => {};
 
   beforeEach(() => {
 
     redisSpy = new RedisSpy();
-    redisClientSpy = redisSpy.createClient();
   });
 
   describe('when connecting to redis', () => {
@@ -38,7 +38,7 @@ describe('Decorator Service Tests', () => {
         process.env.HOPPER_REDIS_CONNECTION_HOST = 'aRedisHost';
         process.env.HOPPER_REDIS_CONNECTION_PORT = '12345';
 
-        decoratorService = new DecoratorService(redisSpy);
+        decoratorService = new DecoratorService(redisSpy, retryStrategy);
       });
 
       it('sets the host from the environment', () => {
@@ -59,7 +59,7 @@ describe('Decorator Service Tests', () => {
         delete process.env.HOPPER_REDIS_CONNECTION_HOST;
         delete process.env.HOPPER_REDIS_CONNECTION_PORT;
 
-        decoratorService = new DecoratorService(redisSpy);
+        decoratorService = new DecoratorService(redisSpy, retryStrategy);
       });
 
       it('defaults the host', () => {
@@ -72,6 +72,12 @@ describe('Decorator Service Tests', () => {
         expect(redisSpy.port).to.equal('6379');
       });
     });
+
+    it('sets the retry strategy', () => {
+
+      decoratorService = new DecoratorService(redisSpy, retryStrategy);
+      expect(redisSpy.retryStrategy).to.equal(retryStrategy);
+    });
   });
 
   describe('when decorating a ticker', () => {
@@ -83,10 +89,13 @@ describe('Decorator Service Tests', () => {
       close: '367.89',
     };
 
+    let redisClientSpy;
+
     beforeEach(() => {
 
-      decoratorService = new DecoratorService(redisSpy);
+      decoratorService = new DecoratorService(redisSpy, retryStrategy);
       decoratorService.decorateTicker(tickerToDecorate);
+      redisClientSpy = redisSpy.getClient();
     });
 
     it('pushes a message to the task queue', () => {

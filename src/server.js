@@ -12,6 +12,21 @@ const server = {};
 
 export default server;
 
+const perpetualRetryStrategy = (options) => {
+
+  const retryAfterSeconds = 5000;
+
+  if (options.error && options.error.code) {
+
+    console.info(`Redis connection error '${options.error.code}', retrying in ${retryAfterSeconds}ms ...`);
+  } else {
+
+    console.info(`Unknown Redis connection issue, retrying in ${retryAfterSeconds}ms ...`);
+  }
+
+  return retryAfterSeconds;
+};
+
 server.start = (dataSource, redisIntegration) => {
 
   const theDataSource = pickDataSource(dataSource);
@@ -19,7 +34,7 @@ server.start = (dataSource, redisIntegration) => {
 
   mongoTickerSource.connect(theDataSource);
 
-  const decoratorService = new DecoratorService(theRedisIntegration);
+  const decoratorService = new DecoratorService(theRedisIntegration, perpetualRetryStrategy);
   restifyServer = restify.createServer();
 
   configureResources(decoratorService);
