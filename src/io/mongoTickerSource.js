@@ -57,7 +57,7 @@ const buildConnectionUrlFromEnv = () => {
 
   const connectionUrl = `mongodb://${host}:${port}/${databaseName}`;
 
-  console.info(`Connecting to mongo dataabase ${connectionUrl}`);
+  console.info(`Connecting to mongo database ${connectionUrl}`);
 
   return connectionUrl;
 };
