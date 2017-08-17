@@ -23,5 +23,17 @@ export default class DecoratorService {
 
     this.redisClient.rpush('UNDECORATED_TICKERS', JSON.stringify(ticker));
   }
+
+  sendBeginProcessingNotification(id) {
+
+    const event = {
+      name: 'BATCH_TICKER_PROCESSING_STARTED',
+      payload: {
+        id,
+      },
+    };
+
+    this.redisClient.publish('TICKER_BATCH_PROCESSING', event);
+  }
 }
 

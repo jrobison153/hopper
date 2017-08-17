@@ -108,4 +108,33 @@ describe('Decorator Service Tests', () => {
       expect(redisClientSpy.lastRightPushedMessage).to.deep.equal(JSON.stringify(tickerToDecorate));
     });
   });
+
+  describe('when sending begin processing notification', () => {
+
+    let redisClientSpy;
+
+    beforeEach(() => {
+
+      decoratorService = new DecoratorService(redisSpy, retryStrategy);
+      redisClientSpy = redisSpy.getClient();
+    });
+
+    it('publishes the BATCH_TICKER_PROCESSING_STARTED event', () => {
+
+      decoratorService.sendBeginProcessingNotification('sdfdw');
+      expect(redisClientSpy.lastPublishedEvent.name).to.equal('BATCH_TICKER_PROCESSING_STARTED');
+    });
+
+    it('publishes the event with the id in the payload', () => {
+
+      decoratorService.sendBeginProcessingNotification('an id of some kind');
+      expect(redisClientSpy.lastPublishedEvent.payload.id).to.equal('an id of some kind');
+    });
+
+    it('publishes the event to the TICKER_BATCH_PROCESSING topic', () => {
+
+      decoratorService.sendBeginProcessingNotification('an id of some kind');
+      expect(redisClientSpy.lastTopicPublishedTo).to.equal('TICKER_BATCH_PROCESSING');
+    });
+  });
 });

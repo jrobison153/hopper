@@ -44,6 +44,12 @@ describe('UndecoratedChromosomeProcessor Tests', () => {
       });
     });
 
+    it('sends the being processing notification', () => {
+
+      expect(decoratorServiceSpy.beginProcessingNotificationSent).to.equal(true);
+      expect(decoratorServiceSpy.beginProcessingNotificationSentId).to.equal(batchResourceId);
+    });
+
     it('creates a resource id for the batch of tickers processed', () => {
 
       expect(batchResourceId).to.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{10}/);

@@ -14,6 +14,8 @@ undecoratedChromosomeProcessor.process = (tickerDataSource, decoratorService) =>
 
   processedTickerBatches[batchId] = [];
 
+  decoratorService.sendBeginProcessingNotification(batchId);
+
   pipeSourceToDecoratorService(stream, decoratorService, batchId);
 
   return new Promise((resolve) => {
