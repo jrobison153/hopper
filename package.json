@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "node ./node_modules/eslint/bin/eslint ./src/**/*.js ./test/**/*.js",
+    "precommit": "npm run lint && npm test",
     "test": "npm run test:unit && npm run test:acceptance",
     "test:acceptance": "mocha --require babel-register --require babel-polyfill test/acceptance/**/*.js",
     "test:acceptance:watch": "mocha --watch --require babel-register --require babel-polyfill test/acceptance/**/*.js",
