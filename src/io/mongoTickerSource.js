@@ -49,7 +49,7 @@ mongoTickerSource.getTickersWithoutChromosome = () => {
   return cursor.stream();
 };
 
-const buildConnectionUrlFromEnv = () => {
+function buildConnectionUrlFromEnv() {
 
   const host = resolveHostFromEnv('localhost');
   const port = resolvePortFromEnv('27017');
@@ -60,24 +60,24 @@ const buildConnectionUrlFromEnv = () => {
   console.info(`Connecting to mongo database ${connectionUrl}`);
 
   return connectionUrl;
-};
+}
 
-const resolveHostFromEnv = (defaultValue) => {
+function resolveHostFromEnv(defaultValue) {
 
   return process.env.MONGO_CONNECTION_HOST ? process.env.MONGO_CONNECTION_HOST : defaultValue;
-};
+}
 
-const resolvePortFromEnv = (defaultValue) => {
+function resolvePortFromEnv(defaultValue) {
 
   return process.env.MONGO_CONNECTION_PORT ? process.env.MONGO_CONNECTION_PORT : defaultValue;
-};
+}
 
-const resolveDatabaseFromEnv = (defaultValue) => {
+function resolveDatabaseFromEnv(defaultValue) {
 
   return process.env.MONGO_CONNECTION_DATABASE ? process.env.MONGO_CONNECTION_DATABASE : defaultValue;
-};
+}
 
-const connectionRetry = (url, MongoClient, connectionAttempts, attemptNumber, resolve, reject) => {
+function connectionRetry(url, MongoClient, connectionAttempts, attemptNumber, resolve, reject) {
 
   MongoClient.connect(url).then((db) => {
 
@@ -101,4 +101,4 @@ const connectionRetry = (url, MongoClient, connectionAttempts, attemptNumber, re
 
     reject(e);
   });
-};
+}
