@@ -33,7 +33,7 @@ export default class DecoratorService {
       },
     };
 
-    this.redisClient.publish('TICKER_BATCH_PROCESSING', event);
+    this.redisClient.publish('TICKER_BATCH_PROCESSING', JSON.stringify(event));
   }
 }
 
