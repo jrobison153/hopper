@@ -11,7 +11,8 @@
     "test:acceptance:watch": "mocha --watch --require babel-register --require babel-polyfill test/acceptance/**/*.js",
     "test:unit": "mocha --require babel-register --require babel-polyfill test/unit/**/*.js",
     "test:unit:watch": "mocha --watch --require babel-register --require babel-polyfill test/unit/**/*.js",
-    "start": "node ./index.js"
+    "start": "node ./index.js",
+    "start:system-integration": "export MONGO_CONNECTION_DATABASE=systemintegration; export PORT=8080; node ./index.js"
   },
   "keywords": [
     "node"

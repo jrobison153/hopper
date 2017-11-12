@@ -78,6 +78,11 @@ const pickRedisIntegration = (providedRedis) => {
 
 const configureResources = (decoratorService) => {
 
+  restifyServer.get('/health', (req, resp) => {
+
+    resp.send('ok');
+  });
+
   restifyServer.post('/chromosomes', (req, resp) => {
 
     undecoratedChromosomeProcessor.process(mongoTickerSource, decoratorService).then((batchId) => {
